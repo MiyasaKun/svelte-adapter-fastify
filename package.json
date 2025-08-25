@@ -44,7 +44,7 @@
 		"@polka/url": "^1.0.0-next.28",
 		"@sveltejs/kit": "^2.21.5",
 		"@sveltejs/vite-plugin-svelte": "^5.0.1",
-		"@types/node": "^18.19.48",
+		"@types/node": "^24.3.0",
 		"fastify": "^5.4.0",
 		"sirv": "^3.0.0",
 		"typescript": "^5.3.3"
