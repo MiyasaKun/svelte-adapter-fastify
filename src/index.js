@@ -152,13 +152,6 @@ server.addHook("onSend", (req, reply, payload, done) => {
   done();
 });
 
-server.addContentTypeParser(
-  "application/x-www-form-urlencoded",
-  (req, body, done) => {
-    done();
-  }
-);
-
 process.on("SIGTERM", () => graceful_shutdown("SIGTERM"));
 process.on("SIGINT", () => graceful_shutdown("SIGINT"));
 
