@@ -69,7 +69,6 @@ server.addContentTypeParser('application/x-www-form-urlencoded', (request, paylo
 
 server.all("/*", (req, reply) => {
   handler(req.raw, reply.raw);
-  logger.info(`Handled request: ${JSON.stringify(req.headers)}`);
 });
 
 const listen_opts = socket_activation
@@ -98,9 +97,7 @@ function graceful_shutdown(reason) {
   if (idle_timeout_id) {
     clearTimeout(idle_timeout_id);
   }
-  for (const connection of connections) {
-    connection.destroy();
-  }
+
   server.close(() => {
     if (shutdown_timeout_id) {
       clearTimeout(shutdown_timeout_id);
@@ -110,17 +107,11 @@ function graceful_shutdown(reason) {
   });
 
   shutdown_timeout_id = setTimeout(() => {
-    process.exit(0);
+    process.exit(1);
   }, shutdown_timeout * 1000);
 }
 
 server.addHook("onRequest", (req, reply, done) => {
-  if (logger_status) {
-    server.log.info(
-      { incoming_headers: req.headers },
-      "Incoming request headers"
-    );
-  }
   requests++;
 
   if (socket_activation && idle_timeout_id) {
@@ -142,18 +133,7 @@ server.addHook("onRequest", (req, reply, done) => {
   done();
 });
 
-server.addHook("onSend", (req, reply, payload, done) => {
-  if (logger_status) {
-    server.log.info(
-      { outgoing_headers: reply.getHeaders() },
-      "Outgoing response headers"
-    );
-  }
-  done();
-});
-
 process.on("SIGTERM", () => graceful_shutdown("SIGTERM"));
 process.on("SIGINT", () => graceful_shutdown("SIGINT"));
 
 export { server };
-
